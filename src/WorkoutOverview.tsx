@@ -1,5 +1,6 @@
 // src/WorkoutOverview.tsx
 import type { Workout, WorkoutStep } from './types';
+import { _calculateStepsDuration } from './App';
 
 interface WorkoutOverviewProps {
   workout: Workout;
@@ -50,7 +51,7 @@ function WorkoutOverview({ workout, onStart, onBack, formatDuration }: WorkoutOv
         {workout.sections ? (
           workout.sections.map((section, sectionIndex) => (
             <div key={sectionIndex} className="workout-section">
-              <h3>{section.name}</h3>
+              <h3>{section.name} <span>({formatDuration(_calculateStepsDuration(section.steps))} min)</span></h3>
               {section.steps.map((step, stepIndex) => (
                 <StepView key={stepIndex} step={step} formatDuration={formatDuration} />
               ))}

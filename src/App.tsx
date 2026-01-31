@@ -8,7 +8,7 @@ import './App.css';
 import './WorkoutRunner.css';
 import './WorkoutOverview.css';
 
-const _calculateStepsDuration = (steps: WorkoutStep[]): number => {
+export const _calculateStepsDuration = (steps: WorkoutStep[]): number => {
   return steps.reduce((total, step) => {
     if (step.type === 'repetition') {
       const repetitionDuration = _calculateStepsDuration(step.steps);
