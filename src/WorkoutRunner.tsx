@@ -12,6 +12,7 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(true);
     const audioContextRef = useRef<AudioContext | null>(null);
+    const audioBufferRef = useRef<AudioBuffer | null>(null);
 
     type FlattenedWorkoutStep = {
       step: WorkoutStep;
@@ -55,7 +56,7 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
 
     const [countdown, setCountdown] = useState(currentStep?.duration ?? 0);
 
-    const triggerFeedback = () => {
+    const triggerFeedback = async () => { // Make it async
         // Always play sound
         if (!audioContextRef.current) {
             const context = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -65,15 +66,34 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
             audioContextRef.current.resume();
         }
         const context = audioContextRef.current;
-        const oscillator = context.createOscillator();
-        const gainNode = context.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(context.destination);
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(440, context.currentTime);
-        gainNode.gain.setValueAtTime(0.5, context.currentTime);
-        oscillator.start(context.currentTime);
-        oscillator.stop(context.currentTime + 0.15);
+
+        // --- NEW AUDIO PLAYBACK LOGIC ---
+        if (!audioBufferRef.current) {
+            try {
+                const response = await fetch(`${import.meta.env.BASE_URL}bell.mp3`); // Use base URL for correct path
+                const arrayBuffer = await response.arrayBuffer();
+                audioBufferRef.current = await context.decodeAudioData(arrayBuffer);
+            } catch (error) {
+                console.error("Error loading bell.mp3:", error);
+                // Fallback to oscillator if MP3 fails to load
+                const oscillator = context.createOscillator();
+                const gainNode = context.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(context.destination);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(440, context.currentTime);
+                gainNode.gain.setValueAtTime(0.5, context.currentTime);
+                oscillator.start(context.currentTime);
+                oscillator.stop(context.currentTime + 0.15);
+                return; // Stop here if fallback is used
+            }
+        }
+
+        const source = context.createBufferSource();
+        source.buffer = audioBufferRef.current;
+        source.connect(context.destination);
+        source.start(0);
+        // --- END NEW AUDIO PLAYBACK LOGIC ---
 
         // Additionally vibrate if supported
         if ('vibrate' in navigator) {
@@ -90,7 +110,10 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
         if (isPaused || !currentStep) return;
 
         if (countdown === 0) {
-            triggerFeedback();
+            const giveFeedback = async () => {
+                await triggerFeedback();
+            };
+            giveFeedback();
             if (currentStepIndex < allSteps.length - 1) {
                 setCurrentStepIndex(currentStepIndex + 1);
             } else {
@@ -113,7 +136,7 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
 
   const progress = (currentStepIndex / allSteps.length) * 100;
 
-  const handlePlayPause = () => {
+  const handlePlayPause = async () => {
     if (!audioContextRef.current) {
         const context = new (window.AudioContext || (window as any).webkitAudioContext)();
         audioContextRef.current = context;
@@ -122,7 +145,7 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
         audioContextRef.current.resume();
     }
     if (isPaused) {
-        triggerFeedback();
+        await triggerFeedback();
     }
     setIsPaused(!isPaused);
   }
