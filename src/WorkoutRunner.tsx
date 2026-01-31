@@ -37,9 +37,7 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
         });
       });
     } else if (workout.steps) {
-      console.log(workout.steps);
       workout.steps.forEach(s => {
-        console.log(s);
         if (s.type === 'repetition') {
             for (let i = 0; i < s.count; i++) {
                 s.steps.forEach(repStep => allSteps.push({ step: repStep }));
@@ -55,8 +53,6 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
     const currentFlattenedStep: FlattenedWorkoutStep | undefined = allSteps[currentStepIndex];
     const currentStep: WorkoutStep | undefined = currentFlattenedStep?.step;
     const currentSectionName: string | undefined = currentFlattenedStep?.sectionName;
-
-    console.log(allSteps);
 
     const triggerFeedback = async () => { // Make it async
         // Always play sound
@@ -204,8 +200,6 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
     }
     setIsPaused(!isPaused);
   }
-
-  console.log({currentStep});
 
   return (
     <div className="workout-runner">
