@@ -22,7 +22,12 @@ const StepView = ({ step, formatDuration }: { step: WorkoutStep, formatDuration:
 
   return (
     <div className="step">
-      <span>{step.type === 'exercise' ? step.name : 'Rest'}</span>
+      <div>
+        <span>{step.type === 'exercise' ? step.name : 'Rest'}</span>
+        {step.type === 'exercise' && step.description && (
+          <p className="step-description">{step.description}</p>
+        )}
+      </div>
       <span>{formatDuration(step.duration)}</span>
     </div>
   );

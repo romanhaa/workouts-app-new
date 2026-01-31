@@ -8,6 +8,7 @@ export interface ExerciseStep extends BaseStep {
   type: 'exercise';
   name: string;
   duration: number; // in seconds
+  description?: string;
 }
 
 export interface RestStep extends BaseStep {

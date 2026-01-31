@@ -88,6 +88,9 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
       <div className="current-step">
         <h2>{currentStep.type === 'exercise' ? currentStep.name : 'Rest'}</h2>
         <p className="countdown">{countdown}</p>
+        {currentStep.type === 'exercise' && currentStep.description && (
+            <p className="exercise-description">{currentStep.description}</p>
+        )}
       </div>
 
       <div className="controls">

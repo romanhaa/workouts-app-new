@@ -4,13 +4,13 @@
       "id": "full-body-1",
       "name": "Full Body Strength",
       "steps": [
-        { "type": "exercise", "name": "Jumping Jacks", "duration": 5 },
+        { "type": "exercise", "name": "Jumping Jacks", "duration": 5, "description": "Some description." },
         { "type": "rest", "duration": 5 },
         {
           "type": "repetition",
           "count": 3,
           "steps": [
-            { "type": "exercise", "name": "Push-ups", "duration": 5 },
+            { "type": "exercise", "name": "Push-ups", "duration": 30, "description": "Keep your back straight and core tight." },
             { "type": "rest", "duration": 5 },
             { "type": "exercise", "name": "Squats", "duration": 5 },
             { "type": "rest", "duration": 5 }

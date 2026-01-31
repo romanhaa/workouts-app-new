@@ -29,6 +29,17 @@
   border-bottom: 1px solid #eee;
 }
 
+.step > div {
+  text-align: left;
+}
+
+.step-description {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
 .step:last-child {
   border-bottom: none;
 }
