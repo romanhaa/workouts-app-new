@@ -37,7 +37,9 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
         });
       });
     } else if (workout.steps) {
+      console.log(workout.steps);
       workout.steps.forEach(s => {
+        console.log(s);
         if (s.type === 'repetition') {
             for (let i = 0; i < s.count; i++) {
                 s.steps.forEach(repStep => allSteps.push({ step: repStep }));
@@ -54,31 +56,7 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
     const currentStep: WorkoutStep | undefined = currentFlattenedStep?.step;
     const currentSectionName: string | undefined = currentFlattenedStep?.sectionName;
 
-    const [countdown, setCountdown] = useState(currentStep?.duration ?? 0);
-
-    const handlePrevious = () => {
-        if (currentStepIndex > 0) {
-            setCurrentStepIndex(prev => {
-                const newIndex = prev - 1;
-                setCountdown(allSteps[newIndex]?.step.duration ?? 0);
-                return newIndex;
-            });
-            setIsPaused(true); // Pause when navigating
-        }
-    };
-
-    const handleNext = () => {
-        if (currentStepIndex < allSteps.length - 1) {
-            setCurrentStepIndex(prev => {
-                const newIndex = prev + 1;
-                setCountdown(allSteps[newIndex]?.step.duration ?? 0);
-                return newIndex;
-            });
-            setIsPaused(true); // Pause when navigating
-        } else {
-            onFinish();
-        }
-    };
+    console.log(allSteps);
 
     const triggerFeedback = async () => { // Make it async
         // Always play sound
@@ -125,33 +103,86 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
         }
     };
 
+    const handlePrevious = () => {
+        if (currentStepIndex > 0) {
+            setCurrentStepIndex(prev => {
+                const newIndex = prev - 1;
+                setCountdown(allSteps[newIndex]?.step.duration ?? 0);
+                return newIndex;
+            });
+            setIsPaused(true); // Pause when navigating
+        }
+    };
+
+    const handleNext = () => {
+        if (currentStepIndex < allSteps.length - 1) {
+            setCurrentStepIndex(prev => {
+                const newIndex = prev + 1;
+                setCountdown(allSteps[newIndex]?.step.duration ?? 0);
+                return newIndex;
+            });
+            setIsPaused(true); // Pause when navigating
+        } else {
+            onFinish();
+        }
+    };
+
+    const [countdown, setCountdown] = useState(currentStep?.duration ?? 0);
+
     useEffect(() => {
+        // Reset countdown whenever currentStep changes, or if workout is unpaused/started
         setCountdown(currentStep?.duration ?? 0);
     }, [currentStep]);
 
-
     useEffect(() => {
-        if (isPaused || !currentStep) return;
+        if (isPaused || !currentStep) {
+            return;
+        }
 
-        if (countdown === 0) {
+        let timer: number | undefined;
+
+        if (countdown > 0) {
+            timer = setInterval(() => {
+                setCountdown(prev => {
+                    if (prev > 1) {
+                        return prev - 1;
+                    } else {
+                        // Countdown is 1, so on next tick it will be 0. Trigger feedback and advance.
+                        const giveFeedback = async () => {
+                            await triggerFeedback();
+                        };
+                        giveFeedback();
+
+                        if (currentStepIndex < allSteps.length - 1) {
+                            setCurrentStepIndex(prevIndex => prevIndex + 1);
+                        } else {
+                            onFinish();
+                        }
+                        return 0; // Set to 0 for the last second
+                    }
+                });
+            }, 1000);
+        } else if (countdown === 0 && currentStepIndex < allSteps.length -1) {
+            // This case handles steps with duration 0, or if countdown somehow became 0 and we need to advance
+            // (e.g., first step of workout is 0 duration)
             const giveFeedback = async () => {
                 await triggerFeedback();
             };
             giveFeedback();
-            if (currentStepIndex < allSteps.length - 1) {
-                setCurrentStepIndex(currentStepIndex + 1);
-            } else {
-                onFinish();
-            }
-            return;
+            setCurrentStepIndex(prevIndex => prevIndex + 1);
+        } else if (countdown === 0 && currentStepIndex === allSteps.length -1) {
+            // Last step, countdown reaches 0
+            const giveFeedback = async () => {
+                await triggerFeedback();
+            };
+            giveFeedback();
+            onFinish();
         }
 
-        const timer = setInterval(() => {
-            setCountdown(prev => prev - 1);
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, [countdown, isPaused, currentStep, currentStepIndex, allSteps.length, onFinish]);
+        return () => {
+            if (timer) clearInterval(timer);
+        };
+    }, [isPaused, currentStep, currentStepIndex, allSteps.length, onFinish, triggerFeedback]);
 
 
   if (!currentStep) {
@@ -173,6 +204,8 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
     }
     setIsPaused(!isPaused);
   }
+
+  console.log({currentStep});
 
   return (
     <div className="workout-runner">
