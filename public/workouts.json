@@ -28,6 +28,47 @@
         { "type": "rest", "duration": 15 },
         { "type": "exercise", "name": "Plank", "duration": 60 }
       ]
+    },
+    {
+      "id": "dry-land-swimmer",
+      "name": "Dry-Land Swimmer",
+      "steps": [
+        { "type": "exercise", "name": "Arm Circles (left)", "duration": 30},
+        { "type": "exercise", "name": "Arm Circles (right)", "duration": 30},
+        { "type": "exercise", "name": "Cat-Cow", "duration": 60},
+        { "type": "exercise", "name": "Bird-Dog", "duration": 60},
+        { "type": "exercise", "name": "Plank to Downward Dog", "duration": 120},
+        {
+          "type": "repetition",
+          "count": 3,
+          "steps": [
+            { "type": "exercise", "name": "Scapular Pull-ups", "duration": 45},
+            { "type": "rest", "duration": 15 },
+            { "type": "exercise", "name": "Kettlebell Swings", "duration": 45},
+            { "type": "rest", "duration": 15 },
+            { "type": "exercise", "name": "Superman rows", "duration": 45},
+            { "type": "rest", "duration": 15 },
+            { "type": "exercise", "name": "Gorilla rows", "duration": 45 },
+            { "type": "rest", "duration": 15 },
+            { "type": "exercise", "name": "Hollow Body Hold", "duration": 45 },
+            { "type": "rest", "duration": 15 },
+            { "type": "exercise", "name": "Chin-ups", "duration": 45 }
+          ]
+        },
+        {
+          "type": "repetition",
+          "count": 3,
+          "steps": [
+            { "type": "exercise", "name": "Dumbbell Lateral Raises", "duration": 30},
+            { "type": "exercise", "name": "Dumbbell Front Raises", "duration": 30},
+            { "type": "rest", "duration": 30 }
+          ]
+        },
+        { "type": "exercise", "name": "Child's Pose", "duration": 120},
+        { "type": "exercise", "name": "Doorway Chest Stretch (left)", "duration": 90},
+        { "type": "exercise", "name": "Doorway Chest Stretch (right)", "duration": 90},
+        { "type": "exercise", "name": "Forward Fold", "duration": 60}
+      ]
     }
   ]
 }
