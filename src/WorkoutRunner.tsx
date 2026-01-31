@@ -1,6 +1,6 @@
 // src/WorkoutRunner.tsx
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { Workout, WorkoutStep } from './types';
 
 interface WorkoutRunnerProps {
@@ -54,10 +54,10 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
     const currentStep: WorkoutStep | undefined = currentFlattenedStep?.step;
     const currentSectionName: string | undefined = currentFlattenedStep?.sectionName;
 
-    const triggerFeedback = async () => { // Make it async
+    const triggerFeedback = useCallback(async () => { // Make it async
         // Always play sound
         if (!audioContextRef.current) {
-            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const context = new (window.AudioContext || (window as typeof window.webkitAudioContext).webkitAudioContext)();
             audioContextRef.current = context;
         }
         if (audioContextRef.current.state === 'suspended') {
@@ -97,7 +97,7 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
         if ('vibrate' in navigator) {
             navigator.vibrate(200); // Vibrate for 200ms
         }
-    };
+    }, [audioContextRef, audioBufferRef]);
 
     const handlePrevious = () => {
         if (currentStepIndex > 0) {
@@ -142,43 +142,37 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
                 setCountdown(prev => {
                     if (prev > 1) {
                         return prev - 1;
-                    } else {
-                        // Countdown is 1, so on next tick it will be 0. Trigger feedback and advance.
-                        const giveFeedback = async () => {
-                            await triggerFeedback();
-                        };
-                        giveFeedback();
-
-                        if (currentStepIndex < allSteps.length - 1) {
-                            setCurrentStepIndex(prevIndex => prevIndex + 1);
-                        } else {
-                            onFinish();
-                        }
-                        return 0; // Set to 0 for the last second
                     }
+                    // If prev is 1, next tick it will be 0. We'll handle feedback and advancement
+                    // in a separate useEffect that watches for countdown === 0.
+                    return 0;
                 });
             }, 1000);
-        } else if (countdown === 0 && currentStepIndex < allSteps.length -1) {
-            // This case handles steps with duration 0, or if countdown somehow became 0 and we need to advance
-            // (e.g., first step of workout is 0 duration)
-            const giveFeedback = async () => {
-                await triggerFeedback();
-            };
-            giveFeedback();
-            setCurrentStepIndex(prevIndex => prevIndex + 1);
-        } else if (countdown === 0 && currentStepIndex === allSteps.length -1) {
-            // Last step, countdown reaches 0
-            const giveFeedback = async () => {
-                await triggerFeedback();
-            };
-            giveFeedback();
-            onFinish();
         }
 
         return () => {
             if (timer) clearInterval(timer);
         };
-    }, [isPaused, currentStep, currentStepIndex, allSteps.length, onFinish, triggerFeedback]);
+    }, [isPaused, currentStep, countdown]); // Added countdown to dependencies
+
+    useEffect(() => {
+        // This effect runs when countdown becomes 0, and we are not paused,
+        // and we haven't reached the last step.
+        if (!isPaused && countdown === 0 && currentStep && currentStepIndex < allSteps.length - 1) {
+            const advanceStep = async () => {
+                await triggerFeedback();
+                setCurrentStepIndex(prevIndex => prevIndex + 1);
+            };
+            advanceStep();
+        } else if (!isPaused && countdown === 0 && currentStepIndex === allSteps.length -1) {
+            // Last step, countdown reaches 0
+            const giveFeedbackAndFinish = async () => {
+                await triggerFeedback();
+                onFinish();
+            };
+            giveFeedbackAndFinish();
+        }
+    }, [countdown, isPaused, currentStep, currentStepIndex, allSteps.length, onFinish, triggerFeedback]);
 
 
   if (!currentStep) {
@@ -189,7 +183,7 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
 
   const handlePlayPause = async () => {
     if (!audioContextRef.current) {
-        const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const context = new (window.AudioContext || (window as typeof window.webkitAudioContext).webkitAudioContext)();
         audioContextRef.current = context;
     }
     if (audioContextRef.current.state === 'suspended') {
@@ -226,8 +220,8 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
           {isPaused ? 'Start' : 'Pause'}
         </button>
         <button onClick={handleNext} disabled={currentStepIndex === allSteps.length - 1} className="nav-button">Next</button>
-        <button onClick={onFinish}>End Workout</button>
       </div>
+      <button className="end-workout" onClick={onFinish}>End Workout</button>
     </div>
   );
 }
