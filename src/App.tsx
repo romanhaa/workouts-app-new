@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import type { Workout, WorkoutData, WorkoutStep } from './types';
 import WorkoutRunner from './WorkoutRunner';
+import WorkoutOverview from './WorkoutOverview';
 import './App.css';
 import './WorkoutRunner.css';
+import './WorkoutOverview.css';
 
 const calculateStepsDuration = (steps: WorkoutStep[]): number => {
   return steps.reduce((total, step) => {
@@ -27,6 +29,7 @@ const formatDuration = (totalSeconds: number): string => {
 function App() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
+  const [isWorkoutStarted, setIsWorkoutStarted] = useState(false);
 
   useEffect(() => {
     fetch('/workouts.json')
@@ -35,15 +38,46 @@ function App() {
       .catch((error) => console.error('Error fetching workouts:', error));
   }, []);
 
+  const handleSelectWorkout = (workout: Workout) => {
+    setSelectedWorkout(workout);
+    setIsWorkoutStarted(false);
+  }
+
+  const handleStartWorkout = () => {
+    setIsWorkoutStarted(true);
+  }
+
+  const handleBackToSelection = () => {
+    setSelectedWorkout(null);
+  }
+
+  const handleWorkoutFinish = () => {
+    setSelectedWorkout(null);
+    setIsWorkoutStarted(false);
+  }
+
   if (selectedWorkout) {
-    return (
-      <div className="App">
-        <WorkoutRunner
-          workout={selectedWorkout}
-          onFinish={() => setSelectedWorkout(null)}
-        />
-      </div>
-    );
+    if (isWorkoutStarted) {
+      return (
+        <div className="App">
+          <WorkoutRunner
+            workout={selectedWorkout}
+            onFinish={handleWorkoutFinish}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div className="App">
+          <WorkoutOverview
+            workout={selectedWorkout}
+            onStart={handleStartWorkout}
+            onBack={handleBackToSelection}
+            formatDuration={formatDuration}
+          />
+        </div>
+      )
+    }
   }
 
   return (
@@ -56,7 +90,7 @@ function App() {
           const totalDuration = calculateStepsDuration(workout.steps);
           const formattedDuration = formatDuration(totalDuration);
           return (
-            <button key={workout.id} onClick={() => setSelectedWorkout(workout)}>
+            <button key={workout.id} onClick={() => handleSelectWorkout(workout)}>
               <div className="workout-name">{workout.name}</div>
               <div className="workout-duration">{formattedDuration}</div>
             </button>

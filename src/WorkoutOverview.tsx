@@ -1,0 +1,49 @@
+// src/WorkoutOverview.tsx
+import type { Workout, WorkoutStep } from './types';
+
+interface WorkoutOverviewProps {
+  workout: Workout;
+  onStart: () => void;
+  onBack: () => void;
+  formatDuration: (seconds: number) => string;
+}
+
+const StepView = ({ step, formatDuration }: { step: WorkoutStep, formatDuration: (s: number) => string }) => {
+  if (step.type === 'repetition') {
+    return (
+      <div className="step-repetition">
+        <div className="step-repetition-header">Repeat {step.count} times:</div>
+        <div className="step-repetition-body">
+          {step.steps.map((s, i) => <StepView key={i} step={s} formatDuration={formatDuration} />)}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="step">
+      <span>{step.type === 'exercise' ? step.name : 'Rest'}</span>
+      <span>{formatDuration(step.duration)}</span>
+    </div>
+  );
+};
+
+
+function WorkoutOverview({ workout, onStart, onBack, formatDuration }: WorkoutOverviewProps) {
+  return (
+    <div className="workout-overview">
+      <h1>{workout.name}</h1>
+      <div className="controls">
+        <button onClick={onBack}>Back</button>
+        <button onClick={onStart}>Start Workout</button>
+      </div>
+      <div className="step-list">
+        {workout.steps.map((step, index) => (
+          <StepView key={index} step={step} formatDuration={formatDuration} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default WorkoutOverview;

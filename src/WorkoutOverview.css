@@ -1,0 +1,59 @@
+/* src/WorkoutOverview.css */
+
+.workout-overview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.workout-overview h1 {
+  color: #333;
+}
+
+.step-list {
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #333; /* Ensure text is readable on white background */
+}
+
+.step {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.step:last-child {
+  border-bottom: none;
+}
+
+.step-repetition {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 0.75rem 0;
+  overflow: hidden;
+}
+
+.step-repetition-header {
+  background-color: #f7f7f7;
+  padding: 0.5rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.step-repetition-body {
+  padding: 0.5rem 0.5rem 0.5rem 1.5rem; /* Indent nested steps */
+}
+
+.workout-overview .controls button:first-child {
+    background-color: #6c757d;
+}
+.workout-overview .controls button:first-child:hover {
+    background-color: #5a6268;
+}
