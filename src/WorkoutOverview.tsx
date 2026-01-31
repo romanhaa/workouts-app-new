@@ -13,9 +13,13 @@ const StepView = ({ step, formatDuration }: { step: WorkoutStep, formatDuration:
     return (
       <div className="step-repetition">
         <div className="step-repetition-header">Repeat {step.count} times:</div>
+
         <div className="step-repetition-body">
           {step.steps.map((s, i) => <StepView key={i} step={s} formatDuration={formatDuration} />)}
         </div>
+        {step.restBetweenReps && (
+          <p className="repetition-rest">Rest: {formatDuration(step.restBetweenReps)}</p>
+        )}
       </div>
     );
   }

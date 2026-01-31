@@ -22,6 +22,7 @@ export interface RepetitionStep extends BaseStep {
   steps: WorkoutStep[];
   // TODO Remove since unused.
   duration: number; // in seconds
+  restBetweenReps?: number; // New: Optional rest period between repetitions in seconds
 }
 
 export type WorkoutStep = ExerciseStep | RestStep | RepetitionStep;

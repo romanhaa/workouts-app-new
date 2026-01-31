@@ -12,7 +12,8 @@ const calculateStepsDuration = (steps: WorkoutStep[]): number => {
   return steps.reduce((total, step) => {
     if (step.type === 'repetition') {
       const repetitionDuration = calculateStepsDuration(step.steps);
-      return total + (repetitionDuration * step.count);
+      const restBetweenRepsDuration = step.restBetweenReps ? step.restBetweenReps * (step.count > 0 ? step.count - 1 : 0) : 0;
+      return total + (repetitionDuration * step.count) + restBetweenRepsDuration;
     } else {
       return total + step.duration;
     }

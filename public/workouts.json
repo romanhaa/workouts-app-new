@@ -41,6 +41,7 @@
         {
           "type": "repetition",
           "count": 3,
+          "restBetweenReps": 90,
           "steps": [
             { "type": "exercise", "name": "Scapular Pull-ups", "duration": 45},
             { "type": "rest", "duration": 15 },
@@ -58,10 +59,10 @@
         {
           "type": "repetition",
           "count": 3,
+          "restBetweenReps": 30,
           "steps": [
             { "type": "exercise", "name": "Dumbbell Lateral Raises", "duration": 30},
-            { "type": "exercise", "name": "Dumbbell Front Raises", "duration": 30},
-            { "type": "rest", "duration": 30 }
+            { "type": "exercise", "name": "Dumbbell Front Raises", "duration": 30}
           ]
         },
         { "type": "exercise", "name": "Child's Pose", "duration": 120},

@@ -13,7 +13,19 @@ function WorkoutRunner({ workout, onFinish }: WorkoutRunnerProps) {
     const [isPaused, setIsPaused] = useState(true);
     const audioContextRef = useRef<AudioContext | null>(null);
 
-    const allSteps = workout.steps.flatMap(s => s.type === 'repetition' ? Array(s.count).fill(s.steps).flat() : s);
+    const allSteps = workout.steps.flatMap(s => {
+        if (s.type === 'repetition') {
+            const repetitionSteps: WorkoutStep[] = [];
+            for (let i = 0; i < s.count; i++) {
+                repetitionSteps.push(...s.steps);
+                if (i < s.count - 1 && s.restBetweenReps) {
+                    repetitionSteps.push({ type: 'rest', duration: s.restBetweenReps });
+                }
+            }
+            return repetitionSteps;
+        }
+        return s;
+    });
     const currentStep: WorkoutStep | undefined = allSteps[currentStepIndex];
 
     const [countdown, setCountdown] = useState(currentStep?.duration ?? 0);
