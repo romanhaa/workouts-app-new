@@ -9,6 +9,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .App-header {
@@ -21,10 +23,30 @@
 
 .workout-list {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
   width: 100%;
-  max-width: 400px;
+}
+
+.workout-list button {
+  flex-basis: 250px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.workout-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.workout-duration {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-top: 0.25rem;
 }
 
 button {
