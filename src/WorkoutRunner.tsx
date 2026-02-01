@@ -10,8 +10,12 @@ interface WorkoutRunnerProps {
 }
 
 function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
+    // State variables
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(true);
+    const [countdown, setCountdown] = useState(0); // Initialize here, will be set by effect
+
+    // Refs
     const audioContextRef = useRef<AudioContext | null>(null);
     const audioBufferRef = useRef<AudioBuffer | null>(null);
 
@@ -20,6 +24,7 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
       sectionName?: string;
     };
 
+    // Memoized computation for allSteps
     const allSteps: FlattenedWorkoutStep[] = useMemo(() => {
       const flattened: FlattenedWorkoutStep[] = [];
       if (workout.sections) {
@@ -53,10 +58,13 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
       }
       return flattened;
     }, [workout]);
+
+    // Derived state (re-calculated on every render if dependencies change)
     const currentFlattenedStep: FlattenedWorkoutStep | undefined = allSteps[currentStepIndex];
     const currentStep: WorkoutStep | undefined = currentFlattenedStep?.step;
     const currentSectionName: string | undefined = currentFlattenedStep?.sectionName;
 
+    // Memoized callback for triggerFeedback
     const triggerFeedback = useCallback(async () => { // Make it async
         // Always play sound
         if (!audioContextRef.current) {
@@ -103,7 +111,24 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
         }
     }, [audioContextRef, audioBufferRef]);
 
-    const handlePrevious = () => {
+    // Memoized callback for handlePlayPause
+    const handlePlayPause = useCallback(async () => {
+      if (!audioContextRef.current) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+          audioContextRef.current = context;
+      }
+      if (audioContextRef.current.state === 'suspended') {
+          audioContextRef.current.resume();
+      }
+      if (isPaused) {
+          await triggerFeedback();
+      }
+      setIsPaused(!isPaused);
+    }, [audioContextRef, isPaused, triggerFeedback, setIsPaused]);
+
+    // Memoized callback for handlePrevious
+    const handlePrevious = useCallback(() => {
         if (currentStepIndex > 0) {
             setCurrentStepIndex(prev => {
                 const newIndex = prev - 1;
@@ -112,9 +137,10 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
             });
             setIsPaused(true); // Pause when navigating
         }
-    };
+    }, [currentStepIndex, allSteps, setCountdown, setIsPaused]);
 
-    const handleNext = () => {
+    // Memoized callback for handleNext
+    const handleNext = useCallback(() => {
         if (currentStepIndex < allSteps.length - 1) {
             setCurrentStepIndex(prev => {
                 const newIndex = prev + 1;
@@ -125,9 +151,15 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
         } else {
             onFinish();
         }
-    };
+    }, [currentStepIndex, allSteps, setCountdown, setIsPaused, onFinish]);
 
-    const [countdown, setCountdown] = useState(currentStep?.duration ?? 0);
+    // Effects
+    useEffect(() => {
+        // Initializes countdown to the first step's duration
+        // Resets countdown whenever currentStep changes (e.g., via handlePrevious/handleNext)
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setCountdown(currentStep?.duration ?? 0);
+    }, [currentStep, setCountdown]);
 
     useEffect(() => {
         if (isPaused || !currentStep) {
@@ -139,10 +171,11 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
                 await triggerFeedback();
                 if (currentStepIndex < allSteps.length - 1) {
                     const nextStep = allSteps[currentStepIndex + 1];
-                    setCountdown(nextStep.step.duration); // Set countdown for the next step
+                    // Batch state updates for next step's countdown and index
+                    setCountdown(nextStep.step.duration);
                     setCurrentStepIndex(prev => prev + 1);
                 } else {
-                    onFinish();
+                    onFinish(); // Last step finished
                 }
             };
             advance();
@@ -154,29 +187,47 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [isPaused, countdown, currentStep, currentStepIndex, allSteps.length, onFinish, triggerFeedback, allSteps]);
+    }, [isPaused, countdown, currentStep, currentStepIndex, allSteps, onFinish, triggerFeedback, setCountdown, setCurrentStepIndex]);
 
+    useEffect(() => {
+      const handleKeyDown = (event: KeyboardEvent) => {
+        switch (event.key) {
+          case 'ArrowLeft':
+            event.preventDefault();
+            handlePrevious();
+            break;
+          case 'ArrowRight':
+            event.preventDefault();
+            handleNext();
+            break;
+          case 'Escape':
+            event.preventDefault();
+            if (window.confirm('Are you sure you want to end the workout?')) {
+              onEnd();
+            }
+            break;
+          case ' ': // Spacebar
+            event.preventDefault();
+            handlePlayPause();
+            break;
+          default:
+            break;
+        }
+      };
 
+      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }, [handlePrevious, handleNext, handlePlayPause, onEnd]);
+
+    // Render logic below
   if (!currentStep) {
     return <div>Workout Complete!</div>;
   }
 
   const progress = (currentStepIndex / allSteps.length) * 100;
-
-  const handlePlayPause = async () => {
-    if (!audioContextRef.current) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const context = new (window.AudioContext || (window as any).webkitAudioContext)();
-        audioContextRef.current = context;
-    }
-    if (audioContextRef.current.state === 'suspended') {
-        audioContextRef.current.resume();
-    }
-    if (isPaused) {
-        await triggerFeedback();
-    }
-    setIsPaused(!isPaused);
-  }
 
   return (
     <div className="workout-runner">
