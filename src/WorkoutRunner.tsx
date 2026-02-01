@@ -202,7 +202,11 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
         </button>
         <button onClick={handleNext} disabled={currentStepIndex === allSteps.length - 1} className="nav-button">Next</button>
       </div>
-      <button className="end-workout" onClick={onEnd}>End Workout</button>
+      <button className="end-workout" onClick={() => {
+        if (window.confirm('Are you sure you want to end the workout?')) {
+          onEnd();
+        }
+      }}>End Workout</button>
     </div>
   );
 }

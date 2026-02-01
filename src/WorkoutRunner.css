@@ -79,6 +79,8 @@
 
   .end-workout {
     background-color: #dc3545;
+    padding: 0.5rem 1rem; /* Smaller padding */
+    font-size: 0.9rem;    /* Smaller font size */
   }
 
   .end-workout:hover {
