@@ -1,6 +1,6 @@
 // src/WorkoutRunner.tsx
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import type { Workout, WorkoutStep } from './types';
 
 interface WorkoutRunnerProps {
@@ -20,37 +20,39 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
       sectionName?: string;
     };
 
-    const allSteps: FlattenedWorkoutStep[] = [];
-
-    if (workout.sections) {
-      workout.sections.forEach(section => {
-        section.steps.forEach(s => {
-          if (s.type === 'repetition') {
-            for (let i = 0; i < s.count; i++) {
-              s.steps.forEach(repStep => allSteps.push({ step: repStep, sectionName: section.name }));
-              if (i < s.count - 1 && s.restBetweenReps) {
-                allSteps.push({ step: { type: 'rest', duration: s.restBetweenReps }, sectionName: section.name });
+    const allSteps: FlattenedWorkoutStep[] = useMemo(() => {
+      const flattened: FlattenedWorkoutStep[] = [];
+      if (workout.sections) {
+        workout.sections.forEach(section => {
+          section.steps.forEach(s => {
+            if (s.type === 'repetition') {
+              for (let i = 0; i < s.count; i++) {
+                s.steps.forEach(repStep => flattened.push({ step: repStep, sectionName: section.name }));
+                if (i < s.count - 1 && s.restBetweenReps) {
+                  flattened.push({ step: { type: 'rest', duration: s.restBetweenReps }, sectionName: section.name });
+                }
               }
+            } else {
+              flattened.push({ step: s, sectionName: section.name });
             }
+          });
+        });
+      } else if (workout.steps) {
+        workout.steps.forEach(s => {
+          if (s.type === 'repetition') {
+              for (let i = 0; i < s.count; i++) {
+                  s.steps.forEach(repStep => flattened.push({ step: repStep }));
+                  if (i < s.count - 1 && s.restBetweenReps) {
+                      flattened.push({ step: { type: 'rest', duration: s.restBetweenReps } });
+                  }
+              }
           } else {
-            allSteps.push({ step: s, sectionName: section.name });
+              flattened.push({ step: s });
           }
         });
-      });
-    } else if (workout.steps) {
-      workout.steps.forEach(s => {
-        if (s.type === 'repetition') {
-            for (let i = 0; i < s.count; i++) {
-                s.steps.forEach(repStep => allSteps.push({ step: repStep }));
-                if (i < s.count - 1 && s.restBetweenReps) {
-                    allSteps.push({ step: { type: 'rest', duration: s.restBetweenReps } });
-                }
-            }
-        } else {
-            allSteps.push({ step: s });
-        }
-      });
-    }
+      }
+      return flattened;
+    }, [workout]);
     const currentFlattenedStep: FlattenedWorkoutStep | undefined = allSteps[currentStepIndex];
     const currentStep: WorkoutStep | undefined = currentFlattenedStep?.step;
     const currentSectionName: string | undefined = currentFlattenedStep?.sectionName;
@@ -152,7 +154,7 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [isPaused, countdown, currentStep, currentStepIndex, allSteps.length, onFinish, triggerFeedback]);
+    }, [isPaused, countdown, currentStep, currentStepIndex, allSteps.length, onFinish, triggerFeedback, allSteps]);
 
 
   if (!currentStep) {
