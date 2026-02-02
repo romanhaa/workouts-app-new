@@ -3,6 +3,7 @@
     {
       "id": "full-body-1",
       "name": "Full Body Strength",
+      "muscleGroups": ["Full Body", "Legs", "Chest", "Shoulders", "Triceps"],
       "steps": [
         { "type": "exercise", "name": "Jumping Jacks", "duration": 5, "description": "Some description." },
         { "type": "rest", "duration": 5 },
@@ -19,22 +20,12 @@
       ]
     },
     {
-      "id": "quick-abs-1",
-      "name": "Quick Abs Burn",
-      "steps": [
-        { "type": "exercise", "name": "Crunches", "duration": 45 },
-        { "type": "rest", "duration": 15 },
-        { "type": "exercise", "name": "Leg Raises", "duration": 45 },
-        { "type": "rest", "duration": 15 },
-        { "type": "exercise", "name": "Plank", "duration": 60 }
-      ]
-    },
-    {
       "id": "dry-land-swimmer",
       "name": "Dry-Land Swimmer",
+      "muscleGroups": ["Full Body", "Back", "Shoulders", "Core", "Biceps"],
       "sections": [
         {
-          "name": "Warmup",
+          "name": "Warm-up",
           "steps": [
             { "type": "exercise", "name": "Arm Circles (left)", "duration": 30},
             { "type": "exercise", "name": "Arm Circles (right)", "duration": 30},
@@ -44,7 +35,7 @@
           ]
         },
         {
-          "name": "Workout",
+          "name": "Main Circuit",
           "steps": [
             {
               "type": "repetition",
@@ -63,7 +54,12 @@
                 { "type": "rest", "duration": 15 },
                 { "type": "exercise", "name": "Chin-ups", "duration": 45 }
               ]
-            },
+            }
+          ]
+        },
+        {
+          "name": "Finisher",
+          "steps": [
             {
               "type": "repetition",
               "count": 3,
@@ -76,12 +72,87 @@
           ]
         },
         {
-          "name": "Cooldown",
+          "name": "Cool Down & Recovery",
           "steps": [
             { "type": "exercise", "name": "Child's Pose", "duration": 120},
             { "type": "exercise", "name": "Doorway Chest Stretch (left)", "duration": 90},
             { "type": "exercise", "name": "Doorway Chest Stretch (right)", "duration": 90},
             { "type": "exercise", "name": "Forward Fold", "duration": 60}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "front-chain-and-foundation",
+      "name": "Front Chain & Foundation",
+      "muscleGroups": ["Full Body", "Legs", "Glutes", "Chest", "Triceps", "Core"],
+      "sections": [
+        {
+          "name": "Warm-up",
+          "steps": [
+            { "type": "exercise", "name": "World's Greatest Stretch", "duration": 120, "description": "Lunge forward, elbow to instead, then rotate arm to sky." },
+            { "type": "exercise", "name": "Glute Bridges", "duration": 60 },
+            { "type": "exercise", "name": "Air Squats", "duration": 120, "description": "Slow and controlled to prep the knees." }
+          ]
+        },
+        {
+          "name": "Main Circuit",
+          "steps": [
+            {
+              "type": "repetition",
+              "count": 4,
+              "restBetweenReps": 60,
+              "steps": [
+                { "type": "exercise", "name": "Kettlebell Goblet Squats", "duration": 50 },
+                { "type": "rest", "duration": 10},
+                { "type": "exercise", "name": "Push-ups", "duration": 50 },
+                { "type": "rest", "duration": 10},
+                { "type": "exercise", "name": "Kettlebell Lunges", "duration": 50 },
+                { "type": "rest", "duration": 10},
+                { "type": "exercise", "name": "Floor Press", "duration": 50 },
+                { "type": "rest", "duration": 10},
+                { "type": "exercise", "name": "Lateral Lunges", "duration": 50 },
+                { "type": "rest", "duration": 10},
+                { "type": "exercise", "name": "Tricep Dips", "duration": 50 },
+                { "type": "rest", "duration": 10},
+                { "type": "exercise", "name": "Plank with Shoulder Taps", "duration": 50 }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Leg Burn Finisher",
+          "steps": [
+            {
+              "type": "repetition",
+              "count": 2,
+              "steps": [
+                {
+                  "type": "repetition",
+                  "count": 2,
+                  "restBetweenReps": 10,
+                  "steps": [
+                    { "type": "exercise", "name": "Kettlebell Thrusters", "duration": 20 }
+                  ]
+                },
+                {
+                  "type": "repetition",
+                  "count": 2,
+                  "restBetweenReps": 10,
+                  "steps": [
+                    { "type": "exercise", "name": "Mountain Climbers", "duration": 20 }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Cool Down & Recovery",
+          "steps": [
+            { "type": "exercise", "name": "Cobra Stretch", "duration": 120 },
+            { "type": "exercise", "name": "Pigeon Pose (left)", "duration": 90 },
+            { "type": "exercise", "name": "Pigeon Pose (left)", "duration": 90 }
           ]
         }
       ]
