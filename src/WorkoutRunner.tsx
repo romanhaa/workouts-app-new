@@ -121,11 +121,9 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
       if (audioContextRef.current.state === 'suspended') {
           audioContextRef.current.resume();
       }
-      if (isPaused) {
-          await triggerFeedback();
-      }
+      // Removed: if (isPaused) { await triggerFeedback(); }
       setIsPaused(!isPaused);
-    }, [audioContextRef, isPaused, triggerFeedback, setIsPaused]);
+    }, [audioContextRef, isPaused, setIsPaused]);
 
     // Memoized callback for handlePrevious
     const handlePrevious = useCallback(() => {
@@ -242,7 +240,10 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
 
       <div className="current-step">
         <h2>{currentStep.type === 'exercise' ? currentStep.name : 'Rest'}</h2>
-        <p className="countdown">{countdown}</p>
+        <div className={`countdown-container ${isPaused ? 'paused' : ''}`}>
+          <p className="countdown">{countdown}</p>
+          {isPaused && <div className="pause-overlay"></div>}
+        </div>
         {currentStep.type === 'exercise' && currentStep.description && (
             <p className="exercise-description">{currentStep.description}</p>
         )}

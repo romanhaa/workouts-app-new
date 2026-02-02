@@ -3,8 +3,6 @@
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
-    width: 100%;
-    max-width: 600px;
   }
 
   .workout-runner h1 {
@@ -50,6 +48,55 @@
     font-weight: bold;
     margin: 0;
     line-height: 1;
+    transition: color 0.3s ease; /* Smooth transition for color change */
+    margin-top: 14px;
+  }
+
+  /* Styles for the pause indicator */
+  .countdown-container {
+    position: relative;
+    display: flex; /* Use flexbox to center content */
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+  }
+
+  .countdown-container.paused .countdown {
+    color: #a0a0a0; /* Grey out text when paused */
+    opacity: 0.7;
+  }
+
+  .pause-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px; /* Adjust size as needed */
+    height: 100px; /* Adjust size as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Allow clicks to pass through */
+  }
+
+  .pause-overlay::before,
+  .pause-overlay::after {
+    content: '';
+    display: block;
+    width: 20px; /* Width of each bar */
+    height: 80px; /* Height of each bar */
+    background-color: #6c757d; /* Color of the pause bars */
+    border-radius: 4px;
+    position: absolute; /* Position pseudo-elements */
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .pause-overlay::before {
+    left: 20px; /* Position first bar */
+  }
+
+  .pause-overlay::after {
+    right: 20px; /* Position second bar */
   }
 
   .controls {
