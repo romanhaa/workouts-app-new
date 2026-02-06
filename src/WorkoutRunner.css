@@ -43,6 +43,21 @@
     margin-bottom: 1rem;
   }
 
+  .next-exercise-preview {
+    text-align: center;
+    color: #666;
+  }
+  
+  .next-exercise-preview h4 {
+    margin: 0;
+    font-size: 1rem;
+  }
+  
+  .next-exercise-preview p {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
   .countdown {
     font-size: 6rem;
     font-weight: bold;

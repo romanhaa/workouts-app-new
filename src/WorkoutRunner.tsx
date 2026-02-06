@@ -220,6 +220,13 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
       };
     }, [handlePrevious, handleNext, handlePlayPause, onEnd]);
 
+    const nextStepPreview = useMemo(() => {
+      if (currentStepIndex < allSteps.length - 1) {
+        return allSteps[currentStepIndex + 1]?.step;
+      }
+      return null;
+    }, [allSteps, currentStepIndex]);
+
     // Render logic below
   if (!currentStep) {
     return <div>Workout Complete!</div>;
@@ -248,6 +255,13 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
             <p className="exercise-description">{currentStep.description}</p>
         )}
       </div>
+
+      {nextStepPreview && (
+        <div className="next-exercise-preview">
+          <h4>Next:</h4>
+          <p>{nextStepPreview.type === 'exercise' ? nextStepPreview.name : 'Rest'}</p>
+        </div>
+      )}
 
       <div className="controls">
         <button onClick={handlePrevious} disabled={currentStepIndex === 0} className="nav-button">Previous</button>

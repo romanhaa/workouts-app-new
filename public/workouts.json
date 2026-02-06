@@ -10,11 +10,11 @@
         {
           "type": "repetition",
           "count": 3,
+          "restBetweenReps": 10,
           "steps": [
             { "type": "exercise", "name": "Push-ups", "duration": 5, "description": "Keep your back straight and core tight." },
             { "type": "rest", "duration": 5 },
-            { "type": "exercise", "name": "Squats", "duration": 5 },
-            { "type": "rest", "duration": 5 }
+            { "type": "exercise", "name": "Squats", "duration": 5 }
           ]
         }
       ]
