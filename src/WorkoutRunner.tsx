@@ -25,7 +25,7 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
       step: WorkoutStep;
       sectionName?: string;
     };
-    
+
     useEffect(() => {
       const manageWakeLock = async () => {
         if ('wakeLock' in navigator) {
@@ -292,7 +292,7 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
       <div className="progress-bar">
         <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }} />
         <div className="progress-bar-text">
-          {`${Math.round(progressPercentage)}% (${formatTimeLeft(remainingTimeInSeconds)})`}
+          {`${Math.round(progressPercentage)}% (${formatTimeLeft(remainingTimeInSeconds)} left)`}
         </div>
       </div>
 
