@@ -150,6 +150,28 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
         }
     }, [audioContextRef, audioBufferRef]);
 
+    const triggerBeep = useCallback(() => {
+        if (!audioContextRef.current) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+            audioContextRef.current = context;
+        }
+        if (audioContextRef.current.state === 'suspended') {
+            audioContextRef.current.resume();
+        }
+        const context = audioContextRef.current;
+
+        const oscillator = context.createOscillator();
+        const gainNode = context.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, context.currentTime);
+        gainNode.gain.setValueAtTime(0.5, context.currentTime);
+        oscillator.start(context.currentTime);
+        oscillator.stop(context.currentTime + 0.1);
+    }, [audioContextRef]);
+
     // Memoized callback for handlePlayPause
     const handlePlayPause = useCallback(async () => {
       if (!audioContextRef.current) {
@@ -203,6 +225,10 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
             return;
         }
 
+        if (countdown <= 3 && countdown > 0) {
+            triggerBeep();
+        }
+
         if (countdown === 0) {
             const advance = async () => {
                 await triggerFeedback();
@@ -224,7 +250,7 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [isPaused, countdown, currentStep, currentStepIndex, allSteps, onFinish, triggerFeedback, setCountdown, setCurrentStepIndex]);
+    }, [isPaused, countdown, currentStep, currentStepIndex, allSteps, onFinish, triggerFeedback, triggerBeep, setCountdown, setCurrentStepIndex]);
 
     useEffect(() => {
       const handleKeyDown = (event: KeyboardEvent) => {
@@ -335,3 +361,4 @@ function WorkoutRunner({ workout, onFinish, onEnd }: WorkoutRunnerProps) {
 }
 
 export default WorkoutRunner;
+
