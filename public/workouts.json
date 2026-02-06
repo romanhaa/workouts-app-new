@@ -100,7 +100,7 @@
           "steps": [
             {
               "type": "repetition",
-              "count": 4,
+              "count": 3,
               "restBetweenReps": 60,
               "steps": [
                 { "type": "exercise", "name": "Kettlebell Goblet Squats", "duration": 50 },
@@ -152,7 +152,7 @@
           "steps": [
             { "type": "exercise", "name": "Cobra Stretch", "duration": 120 },
             { "type": "exercise", "name": "Pigeon Pose (left)", "duration": 90 },
-            { "type": "exercise", "name": "Pigeon Pose (left)", "duration": 90 }
+            { "type": "exercise", "name": "Pigeon Pose (right)", "duration": 90 }
           ]
         }
       ]
