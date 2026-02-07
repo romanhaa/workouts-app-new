@@ -233,6 +233,136 @@
           ]
         }
       ]
+    },
+    {
+      "id": "animal-flow-posture-reset",
+      "name": "Primal Posture Flow",
+      "muscleGroups": ["Back", "Shoulders", "Core", "Hips"],
+      "sections": [
+        {
+          "name": "Warm-up",
+          "steps": [
+            {
+              "type": "exercise",
+              "name": "Deep Squat",
+              "duration": 60,
+              "description": "Sit as deep as possible. Shift weight side to side to wake up ankles and hips."
+            },
+            {
+              "type": "exercise",
+              "name": "Wrist Circles",
+              "duration": 60,
+              "description": "Roll wrists out thoroughly to prepare for weight-bearing positions."
+            },
+            {
+              "type": "repetition",
+              "count": 4,
+              "steps": [
+                {
+                  "type": "exercise",
+                  "name": "Beast Hold",
+                  "duration": 20,
+                  "description": "On all fours, tuck toes, lift knees 1 inch off floor. Keep back flat like a table."
+                },
+                {
+                  "type": "rest",
+                  "duration": 10
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Main Circuit",
+          "steps": [
+            {
+              "type": "repetition",
+              "count": 3,
+              "restBetweenReps": 60,
+              "steps": [
+                {
+                  "type": "exercise",
+                  "name": "Bear Crawl",
+                  "duration": 45,
+                  "description": "Opposite hand and foot move together. Keep hips lower than shoulders."
+                },
+                {
+                  "type": "exercise",
+                  "name": "Supported Reach",
+                  "duration": 45,
+                  "description": "From deep squat, reach one hand back, drive hips up, and twist toward the back corner."
+                },
+                {
+                  "type": "exercise",
+                  "name": "Cross Body Control",
+                  "duration": 45,
+                  "description": "From Beast, thread leg through, extend it, and pull the top elbow back."
+                },
+                {
+                  "type": "exercise",
+                  "name": "Hip Flow",
+                  "duration": 45,
+                  "description": "Sit with knees at 90/90. Switch knees side to side without using hands if possible."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Cool Down",
+          "steps": [
+            {
+              "type": "exercise",
+              "name": "Static Deep Squat",
+              "duration": 120,
+              "description": "Sit in the bottom of the squat and breathe deeply to reset the spine."
+            },
+            {
+              "type": "exercise",
+              "name": "Wrist Release",
+              "duration": 120,
+              "description": "Fold hands together and make figure eights to release tension."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daily-anti-slouch-reset",
+      "name": "5-Minute Anti-Slouch Reset",
+      "muscleGroups": ["Upper Back", "Chest", "Neck"],
+      "steps": [
+        {
+          "type": "exercise",
+          "name": "Wall Angels",
+          "duration": 60,
+          "description": "Back against wall, head and tailbone touching. Slide arms up and down like a snow angel without arching lower back."
+        },
+        {
+          "type": "exercise",
+          "name": "Prone Y-W Raises",
+          "duration": 60,
+          "description": "Lay on belly, lift chest slightly. Reach arms to a 'Y', then pull elbows to ribs to make a 'W', squeezing shoulder blades."
+        },
+        {
+          "type": "exercise",
+          "name": "Cat-Cow",
+          "duration": 60,
+          "description": "On all fours, cycle between arching and rounding. Focus on dropping the belly and lifting the chest (Cow) to mobilize the mid-back."
+        },
+        {
+          "type": "exercise",
+          "name": "Thoracic Extension",
+          "duration": 60,
+          "description": "Lay over a rolled-up towel or foam roller placed horizontally across your mid-back. Let your head fall back gently."
+        },
+        {
+          "type": "exercise",
+          "name": "Chin Tucks",
+          "duration": 60,
+          "description": "While standing, pull your chin straight back to create a 'double chin'. Strengthens neck flexors to stop head drift."
+        }
+      ]
     }
   ]
 }
